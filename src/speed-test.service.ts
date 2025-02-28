@@ -92,9 +92,9 @@ export class SpeedTestService {
           if (i === 4) {
             this.results.WithVPN.push({
               LocationName: location,
-              TimeToConnect: speedTestsProgress.reduce((avg, progress) => avg + progress.latency, 0) / speedTestsProgress.length,
-              VPNSpeedDownload: speedTestsProgress.reduce((avg, progress) => avg + progress.downloadSpeed, 0) / speedTestsProgress.length,
-              VPNSpeedUpload: speedTestsProgress.reduce((avg, progress) => avg + progress.uploadSpeed, 0) / speedTestsProgress.length,
+              TimeToConnect: Number((speedTestsProgress.reduce((avg, progress) => avg + progress.latency, 0) / speedTestsProgress.length).toFixed(2)),
+              VPNSpeedDownload: Number((speedTestsProgress.reduce((avg, progress) => avg + progress.downloadSpeed, 0) / speedTestsProgress.length).toFixed(2)),
+              VPNSpeedUpload: Number((speedTestsProgress.reduce((avg, progress) => avg + progress.uploadSpeed, 0) / speedTestsProgress.length).toFixed(2)),
             });
           }
         } catch (error) {
@@ -113,10 +113,26 @@ export class SpeedTestService {
       await this.disconnectFromVpn();
     }
 
-    writeFileSync('data/output.json', JSON.stringify(this.results, null, 2));
+    const mappedResult = {
+      ...this.results,
+      WithoutVPN: {
+        ...this.results.WithoutVPN,
+        TimeToConnect: `${this.results.WithoutVPN.TimeToConnect} ms`,
+        VPNSpeedDownload: `${this.results.WithoutVPN.VPNSpeedDownload} Mbps`,
+        VPNSpeedUpload: `${this.results.WithoutVPN.VPNSpeedUpload} Mbps`,
+      },
+      WithVPN: this.results.WithVPN.map((vpn) => ({
+        ...vpn,
+        TimeToConnect: `${vpn.TimeToConnect} ms`,
+        VPNSpeedDownload: `${vpn.VPNSpeedDownload} Mbps`,
+        VPNSpeedUpload: `${vpn.VPNSpeedUpload} Mbps`,
+      })),
+    };
+
+    writeFileSync('data/output.json', JSON.stringify(mappedResult, null, 2));
     writeFileSync('data/output-full.json', JSON.stringify(this.fullResults, null, 2));
 
-    console.log('Finished running speed tests! Please verify output files from data folder.');
+    console.log('Finished running speed tests! Please verify output files from data folder. Here is a preview of your results:', mappedResult);
   }
 
   async getSpeedTestResult(): Promise<SpeedTestProgress> {
@@ -190,7 +206,7 @@ export class SpeedTestService {
     if (!locationsInput || !locationsInput.locations) {
       return [];
     }
-    
+
     return locationsInput.locations.map((location) => {
       let name = location.country;
 
