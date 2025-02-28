@@ -39,11 +39,11 @@ For a full result, please check data/output-full.json file.
 
 1.  **Build the Docker image:**
 
-    docker-compose build
+    docker compose build
 
 2.  **Run the Docker container:**
 
-    docker-compose up
+    docker compose up
 
     This command will:
 
@@ -53,7 +53,7 @@ For a full result, please check data/output-full.json file.
 
 3.  **Stop the Docker container:**
 
-    docker-compose down
+    docker compose down
 
     This command will:
 
