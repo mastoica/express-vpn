@@ -32,6 +32,7 @@ RUN npm install
 
 COPY . .
 
+RUN rm -rf dist/
 RUN npm run build
 
 COPY entrypoint.sh /tmp/entrypoint.sh
