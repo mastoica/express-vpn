@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { SpeedTestCommand } from './app.command';
+import { SpeedTestService } from './speed-test.service';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [SpeedTestCommand, SpeedTestService],
 })
 export class AppModule {}

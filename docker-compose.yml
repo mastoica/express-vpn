@@ -1,7 +1,12 @@
-version: '3'
 services:
   express-vpn:
     build: .
+    platform: linux/amd64
+    environment:
+      - EXPRESSVPN_ACTIVATION_CODE=${EXPRESSVPN_ACTIVATION_CODE}
+      - SERVER=${SERVER}
+      - PREFERRED_PROTOCOL=${PREFERRED_PROTOCOL}
+      - LIGHTWAY_CIPHER=${LIGHTWAY_CIPHER}
     cap_add:
       - NET_ADMIN
     devices:
@@ -9,3 +14,7 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+      - /app/dist
+    privileged: true
+    tty: true
+    stdin_open: true

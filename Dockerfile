@@ -1,29 +1,32 @@
-FROM ubuntu:20.04
+FROM debian:bullseye-slim
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update && apt-get install -y \
-    curl \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget \
     unzip \
+    libterm-readkey-perl \ 
+    ca-certificates \
+    expect \
+    iproute2 \
+    procps \
+    libnm0 \
+    gnupg \
+    build-essential python3 \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+ARG APP=expressvpn_3.82.0.2-1_amd64.deb
+
+RUN wget -q https://deb.nodesource.com/setup_20.x -O - | bash - \
     && apt-get install -y nodejs \
     && npm install -g npm@latest
 
-RUN curl -O https://www.expressvpn.works/clients/linux/expressvpn-linux-universal-4.0.0.9224.run \
-    && chmod +x expressvpn-linux-universal-4.0.0.9224.run \
-    && ./expressvpn-linux-universal-4.0.0.9224.run --target /expressvpn-files --noexec \
-    && cp -r /expressvpn-files/* / \
-    && rm -rf /expressvpn-files expressvpn-linux-universal-4.0.0.9224.run
-
-RUN ln -s /usr/bin/expressvpn /usr/local/bin/expressvpn
-
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN wget -q "https://www.expressvpn.works/clients/linux/${APP}" -O /tmp/${APP} \
+    && dpkg -i /tmp/${APP} \
+    && rm -rf /tmp/*.deb \
+    && apt-get purge -y --auto-remove wget
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
 
 RUN npm install
 
@@ -31,4 +34,7 @@ COPY . .
 
 RUN npm run build
 
-CMD ["node", "dist/main"]
+COPY entrypoint.sh /tmp/entrypoint.sh
+COPY expressvpnActivate.sh /tmp/expressvpnActivate.sh
+
+ENTRYPOINT ["/bin/bash", "/tmp/entrypoint.sh"]
