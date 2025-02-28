@@ -25,6 +25,16 @@ This project provides a command-line tool to test the speed of ExpressVPN connec
 
     Replace `<your_activation_code>` with your actual ExpressVPN activation code.
 
+## Simple start
+
+Run the following script
+
+./start.sh
+
+This will build the Docker image and run the container, starting the ExpressVPN service and running the speed test automatically.
+At the end of the test, the container will stop and output will be written inside data/output.json files.
+For a full result, please check data/output-full.json file.
+
 ## Usage
 
 1.  **Build the Docker image:**
@@ -40,6 +50,14 @@ This project provides a command-line tool to test the speed of ExpressVPN connec
     - Start the ExpressVPN service inside the container.
     - Activate ExpressVPN using the provided activation code.
     - Run a speed test with the provided locations from `data/input.json`(please change locations if needed).
+
+3.  **Stop the Docker container:**
+
+    docker-compose down
+
+    This command will:
+
+    - Stop the ExpressVPN service inside the container.
 
 ## Notes
 

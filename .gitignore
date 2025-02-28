@@ -2,8 +2,9 @@
 /dist
 /node_modules
 /build
-/data/output.json
-/data/output-full.json
+
+# ExpressVPN
+data/output*.json
 
 # Logs
 logs
@@ -56,4 +57,3 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-

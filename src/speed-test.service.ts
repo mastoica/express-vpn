@@ -187,7 +187,11 @@ export class SpeedTestService {
   }
 
   parseLocations(locationsInput: LocationJSON): string[] {
-    return locationsInput?.locations?.map((location) => {
+    if (!locationsInput || !locationsInput.locations) {
+      return [];
+    }
+    
+    return locationsInput.locations.map((location) => {
       let name = location.country;
 
       if (location.city && location.city.trim() !== '') {
